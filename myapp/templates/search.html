@@ -1,0 +1,108 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+  /* Internal CSS for search form */
+  .search-container {
+    text-align: center;
+    margin-top: 50px;
+  }
+
+  .search-input {
+    padding: 10px;
+    width: 50%;
+    font-size: 1rem;
+  }
+
+  .search-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .search-btn:hover {
+    background-color: #0056b3;
+  }
+
+  .search-results {
+    margin-top: 50px;
+  }
+</style>
+
+<div class="search-container">
+  <h1>Search our Online Bookstore!</h1>
+  <form action="" method="get">
+    <input
+      type="text"
+      name="q"
+      id="q"
+      placeholder="Search for books..."
+      autocomplete="off"
+      class="search-input"
+    />
+    <button type="submit" class="search-btn">Search</button>
+  </form>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center" id="books_content">
+    {% for book in books %}
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <img
+          src="{{ book.image_url }}"
+          class="card-img-top"
+          alt="{{ book.name }}"
+        />
+        <div class="card-body">
+          <h5 class="card-title">{{ book.name }}</h5>
+          <p class="card-text">Price: ${{ book.price }}</p>
+          <p class="card-text">Author: {{ book.author }}</p>
+          <p class="card-text">Rating: {{ book.rating }}</p>
+          <p class="card-text">Release Date: {{ book.release_date }}</p>
+          <form
+            id="add-to-cart-form-{{ product.id }}"
+            data-product-id="{{ product.id }}"
+          >
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary add-to-cart-btn">
+              Add to Cart
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<p id="here"></p>
+<script>
+  $(document).ready(function () {
+    $("#q").keyup(function () {
+      var query = $(this).val();
+      if (query.length >= 2) {
+        // Minimum query length (adjust as needed)
+        $.ajax({
+          url: "/search/", // Replace with your actual URL
+          data: { q: query },
+          dataType: "json",
+          success: function (data) {
+            if (data.length > 0) {
+              $("#books_content").html(data);
+            } else {
+              $("#here").hmtl("No matching search results found");
+            }
+          },
+          error: function (error) {
+            console.log(error);
+            // Handle errors (display message, etc.)
+          },
+        });
+      }
+    });
+  });
+</script>
+
+{% endblock %}

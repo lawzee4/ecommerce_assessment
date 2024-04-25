@@ -1,0 +1,15 @@
+{% if query %}
+    <h2>Search results for "{{ query }}"</h2>
+    {% if books %}
+        <ul>
+            {% for book in books %}
+                <li>{{ book.title }} by {{ book.author }}</li>
+                <!-- Display other details as needed -->
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+{% else %}
+    <p>No search query provided.</p>
+{% endif %}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <style>
+    /* Custom CSS for product.html */
+
+    .container {
+      padding: 20px;
+    }
+
+    .book-image {
+      width: 100px;
+      height: auto;
+    }
+
+    .table {
+      width: 100%;
+      margin-bottom: 1rem;
+      background-color: #fff;
+      border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+      padding: 0.75rem;
+      vertical-align: top;
+      border: 1px solid #dee2e6;
+    }
+
+    .table thead th {
+      vertical-align: bottom;
+      border: 1px solid #dee2e6;
+      background-color: #343a40;
+      color: #fff;
+    }
+
+    /* Reduce space for "Name" column */
+    .table td:nth-child(2) {
+      width: 40%;
+    }
+
+    .table td:nth-child(6) {
+      width: 10%;
+    }
+
+    /* Professional alignment */
+    .container h1 {
+      text-align: center;
+    }
+
+    .table th,
+    .table td {
+      text-align: left;
+    }
+  </style>
+
+  <div class="container">
+    <h1>Product List</h1>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Image</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Author</th>
+            <th scope="col">Rating</th>
+            <th scope="col">Release Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+            <tr>
+              <td><img class="book-image" src="{{ product.image_url }}" alt="{{ product.name }}"></td>
+              <td>{{ product.name }}</td>
+              <td>${{ product.price }}</td>
+              <td>{{ product.author }}</td>
+              <td>{{ product.rating }}</td>
+              <td>{{ product.release_date }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

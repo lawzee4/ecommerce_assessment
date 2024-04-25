@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        /* Internal CSS for card layout */
+        body {
+            background-color: #f2f2f2; /* Set grey background color for the entire page */
+        }
+
+        .container {
+            text-align: center; /* Center-align content */
+            background-color: #fff; /* Set white background color for container */
+            padding: 20px; /* Add padding */
+            border-radius: 10px; /* Add border radius */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add box shadow */
+        }
+
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    </style>
+
+    <div class="container">
+        <h1>Welcome to our Online Bookstore!</h1>
+        <div class="row justify-content-center"> <!-- Center-align row -->
+            {% for product in products %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">Price: ${{ product.price }}</p>
+                            <p class="card-text">Author: {{ product.author }}</p>
+                            <p class="card-text">Rating: {{ product.rating }}</p>
+                            <p class="card-text">Release Date: {{ product.release_date }}</p>
+                            <form id="add-to-cart-form-{{ product.id }}" data-product-id="{{ product.id }}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent form submission
+                    const productId = this.parentElement.dataset.productId;
+                    addToCart(productId);
+                });
+            });
+
+            function addToCart(productId) {
+                fetch(`/add_to_cart/${productId}/`, { method: 'POST' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Item added to cart successfully!');
+                        } else {
+                            alert('Failed to add item to cart.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error adding item to cart:', error);
+                        alert('An error occurred while adding item to cart.');
+                    });
+            }
+        });
+    </script>
+{% endblock %}

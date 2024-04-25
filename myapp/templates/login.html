@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<style>
+    /* Center the content vertically and horizontally */
+    .center-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Make the container take up the full viewport height */
+    }
+
+    /* Style the card */
+    .login-card {
+        width: 350px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style the form */
+    .login-form {
+        margin-top: 20px;
+    }
+
+    /* Style the login button */
+    .login-btn {
+        width: 100%;
+    }
+</style>
+
+<div class="center-content">
+    <div class="login-card">
+        <h2 class="text-center mb-4">Login</h2>
+        <form action="{% url 'login' %}" method="post" class="login-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary login-btn">Login</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
