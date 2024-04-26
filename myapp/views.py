@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login as auth_login
 from .models import Product, Cart, CartItem, Book
-from django.db.models import Q  # Import Q to perform complex queries
-from django.http import JsonResponse  # Import JsonResponse for returning JSON data
-
+from django.db.models import Q
+from django.http import JsonResponse
 
 def index(request):
     products = Product.objects.all()
@@ -31,16 +31,20 @@ def cart(request):
     total_price = sum(item.product.price * item.quantity for item in cart_items)
     return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price})
 
+@login_required
+def profile(request):
+    user = request.user
+    # You can pass any additional user information needed for the profile page
+    return render(request, 'profile.html', {'user': user})
 
 def search(request):
-    query = request.GET.get('q')  # Get the search query from the URL parameter 'q'
+    query = request.GET.get('q')
     if query:
-        books = Product.objects.filter(name__icontains=query) | Product.objects.filter(author__icontains=query)  # Case-insensitive search on title and author
-        results = [{'name': book.name, 'image_url': book.image_url, 'price': book.price, 'author': book.author, 'rating': book.rating, 'release_date': book.release_date} for book in books]  # Prepare data for JSON response
+        books = Product.objects.filter(Q(name__icontains=query) | Q(author__icontains=query))
+        results = [{'name': book.name, 'image_url': book.image_url, 'price': book.price, 'author': book.author, 'rating': book.rating, 'release_date': book.release_date} for book in books]
     else:
-        results = []  # Empty list if no query provided
+        results = []
     return render(request, 'search.html', {'books': results})
-
 
 def login(request): 
     if request.method == 'POST':
@@ -49,7 +53,7 @@ def login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)
-            return redirect('index')  # Corrected redirection to 'index'
+            return redirect('index')
         else:
             return render(request, 'login.html', {'error_message': 'Invalid username or password'})
     else:
