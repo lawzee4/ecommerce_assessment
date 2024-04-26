@@ -24,7 +24,7 @@ Running Test
  Python manage.py test
  Cloud Deployment
 7.	The cloud deployement link for the project is:
-https://github.com/lawzee4/ecommerce_assessment.git
+http://lawzee4.pythonanywhere.com/
 
 Admin Access
 8.	For Admin Access**
